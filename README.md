@@ -4,7 +4,7 @@ Projet de Robotique en python visant à programmer un héxapode à l'aide de la 
 
 Le robot est configurable au clavier.
 
-i: Position initiale du robot.
+i: Position initiale du robot.<br />
 z: Déplacement du robot vers l'avant
 s: Déplacement du robot vers l'arrière
 q: Déplacement du robot vers la gauche
