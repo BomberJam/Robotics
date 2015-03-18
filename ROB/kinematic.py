@@ -2,7 +2,7 @@
 import itertools
 import time
 import numpy
-import pypot.dynamixel
+#import pypot.dynamixel
 import math
 
 constL1 = 51

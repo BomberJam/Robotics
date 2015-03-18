@@ -32,6 +32,7 @@ if __name__ == '__main__':
                     print 'id:', found_ids[y]
                     changementid(found_ids[y])
                     found_ids = dxl_io.scan()
+                    new_pos = dxl_io.get_present_position(found_ids)
                     old_pos = new_pos
                     break;
 
