@@ -116,7 +116,7 @@ def holonomie():
 	y_s = 70
 	group_pair = [120, 120, 120, 70, 0, -70, -70, -70, -70]
 	group_impair = [120, 120, 120, 0, -70, 70, -70, -70, -70]
-	angle = 0.5#11.25
+	angle = 0.5
 	manual = 1
 	pas = 2
 	count_pas = 10
@@ -263,6 +263,12 @@ def holonomie():
 
 			if pos_init == 1:
 				after_init(group_impair,pas)
+				liste = change_front_back(x_f_b, y_f_b, angle)
+				x_f_b = liste[0]
+				y_f_b = liste[1]
+				liste = change_side(x_s, y_s, angle)
+				x_s = liste[0]
+				y_s = liste[1]
 				pos_init = 0
 
 
@@ -295,6 +301,12 @@ def holonomie():
 
 			if pos_init == 1:
 				after_init(group_impair,pas)
+				liste = change_front_back(x_f_b, y_f_b, angle)
+				x_f_b = liste[0]
+				y_f_b = liste[1]
+				liste = change_side(x_s, y_s, angle)
+				x_s = liste[0]
+				y_s = liste[1]
 				pos_init = 0
 
 
@@ -321,8 +333,12 @@ def holonomie():
 			count_pas = 10
 			pos_init = 1
 			initialize_to_zero(rob, group_impair, group_pair)
+			x_f_b = 120
+			y_f_b = 0
+			x_s = 120
+			y_s = 70
 		elif choix == 'w':
-			angle += 1
+			angle += 0.5
 			liste = change_front_back(x_f_b, y_f_b, angle)
 			x_f_b = liste[0]
 			y_f_b = liste[1]
@@ -332,7 +348,7 @@ def holonomie():
 			y_s = liste[1]
 			print liste
 		elif choix == 'x':
-			angle -= 1
+			angle -= 0.5
 			liste = change_front_back(x_f_b, y_f_b, angle)
 			x_f_b = liste[0]
 			y_f_b = liste[1]
