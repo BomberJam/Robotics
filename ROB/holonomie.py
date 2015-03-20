@@ -44,27 +44,22 @@ def keyevent():
 
 def move(group_pair, group_impair):
     set_pos_to_leg(group_impair[0], group_impair[3], group_impair[6], rob.leg1)
-
     set_pos_to_leg(group_pair[0], group_pair[3], group_pair[6], rob.leg2)
-
     set_pos_to_leg(group_impair[1], group_impair[4], group_impair[7], rob.leg3)
-
     set_pos_to_leg(group_pair[1], group_pair[4], group_pair[7], rob.leg4)
-
     set_pos_to_leg(group_impair[2], group_impair[5], group_impair[8], rob.leg5)
-
     set_pos_to_leg(group_pair[2], group_pair[5], group_pair[8], rob.leg6)
 
 
 def change_front_back(x1, y1, angle):
-	x = x1*cos(angle) - y1*sin(angle)
-	y = x1*sin(angle) + y1*cos(angle)
+	x = x1*cos(radians(angle)) - y1*sin(radians(angle))
+	y = x1*sin(radians(angle)) + y1*cos(radians(angle))
 
 	return [x, y]
 
 def change_side(x1, y1, angle):
-	x = x1*cos(angle) - y1*sin(angle)
-	y = x1*sin(angle) + y1*cos(angle)
+	x = x1*cos(radians(angle)) - y1*sin(radians(angle))
+	y = x1*sin(radians(angle)) + y1*cos(radians(angle))
 
 	return [x, y]
 
@@ -115,13 +110,13 @@ def modification_pair(leg_pair, x2, x4, x6, y2, y4, y6, z2, z4, z6):
 def holonomie():
 	global choix, rob
 	liste = 0
-	x_f_b = 0.5
+	x_f_b = 120
 	y_f_b = 0
-	x_s = 0.5
-	y_s = 0
+	x_s = 120
+	y_s = 70
 	group_pair = [120, 120, 120, 70, 0, -70, -70, -70, -70]
 	group_impair = [120, 120, 120, 0, -70, 70, -70, -70, -70]
-	angle = 1#11.25
+	angle = 0.5#11.25
 	manual = 1
 	pas = 2
 	count_pas = 10
@@ -259,8 +254,8 @@ def holonomie():
 
 			move(group_pair, group_impair)
 		elif choix == 'a':
-			if direction != 'q':
-				direction = 'q'
+			if direction != 'a':
+				direction = 'a'
 				count_pas = 10
 				pos_init = 1
 				initialize_to_zero(rob, group_impair, group_pair)
@@ -270,18 +265,20 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-			if count_pas < 10 :
-				group_pair = modification_pair(group_pair, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-				group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, 6, 6, 6)
+			print group_pair, '\n'
+
+			if count_pas < 10:
+				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), 0, 0, 0)
+				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120, 120-x_s, -y_f_b, (70-y_s), -(y_s-70), 6, 6, 6)
 			elif count_pas < 20:
-				group_pair = modification_pair(group_pair, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-				group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, -6, -6, -6)
+				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), 0, 0, 0)
+				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120, 120-x_s, -y_f_b, (70-y_s), -(y_s-70), -6, -6, -6)
 			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, 0, 0, 0 , 0, 0, 0, 6, 6, 6)		
-				group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), 6, 6, 6)		
+				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s, x_s-120, y_f_b, (y_s-70), (y_s-70), 0, 0, 0)
 			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, 0, 0, 0 , 0, 0, 0, -6, -6, -6)				
-				group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), -6, -6, -6)				
+				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s, x_s-120, y_f_b, (y_s-70), (y_s-70), 0, 0, 0)
 
 			count_pas += 1	
 
@@ -325,24 +322,24 @@ def holonomie():
 			pos_init = 1
 			initialize_to_zero(rob, group_impair, group_pair)
 		elif choix == 'w':
-			angle +=1#*= 2
+			angle += 1
 			liste = change_front_back(x_f_b, y_f_b, angle)
 			x_f_b = liste[0]
 			y_f_b = liste[1]
 			print liste
 			liste = change_side(x_s, y_s, angle)
 			x_s = liste[0]
-			x_s = liste[1]
+			y_s = liste[1]
 			print liste
 		elif choix == 'x':
-			angle -+ 1 #= - (angle * 2)
+			angle -= 1
 			liste = change_front_back(x_f_b, y_f_b, angle)
 			x_f_b = liste[0]
 			y_f_b = liste[1]
 			print liste
 			liste = change_side(x_s, y_s, angle)
 			x_s = liste[0]
-			x_s = liste[1]
+			y_s = liste[1]
 			print liste
 		elif choix == 'm':
 			if manual == 1:
