@@ -265,7 +265,6 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-			print group_pair, '\n'
 
 			if count_pas < 10:
 				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), 0, 0, 0)
@@ -287,8 +286,8 @@ def holonomie():
 
 			move(group_pair, group_impair)
 		elif choix =='e':
-			if direction != 'q':
-				direction = 'q'
+			if direction != 'e':
+				direction = 'e'
 				count_pas = 10
 				pos_init = 1
 				initialize_to_zero(rob, group_impair, group_pair)
@@ -298,18 +297,19 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
+
 			if count_pas < 10 :
-				group_pair = modification_pair(group_pair, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-				group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, 6, 6, 6)
+				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), 0, 0, 0)		
+				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s, x_s-120, y_f_b, (y_s-70), (y_s-70), 6, 6, 6)
 			elif count_pas < 20:
-				group_pair = modification_pair(group_pair, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-				group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, -6, -6, -6)
+				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), 0, 0, 0)				
+				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s, x_s-120, y_f_b, (y_s-70), (y_s-70), -6, -6, -6)
 			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, 0, 0, 0 , 0, 0, 0, 6, 6, 6)		
-				group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), 6, 6, 6)
+				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120, 120-x_s, -y_f_b, (70-y_s), -(y_s-70), 0, 0, 0)
 			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, 0, 0, 0 , 0, 0, 0, -6, -6, -6)				
-				group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), -6, -6, -6)
+				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120, 120-x_s, -y_f_b, (70-y_s), -(y_s-70), 0, 0, 0)
 
 			count_pas += 1	
 
