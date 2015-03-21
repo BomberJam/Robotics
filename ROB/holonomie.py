@@ -111,7 +111,9 @@ def modification_pair(leg_pair, x2, x4, x6, y2, y4, y6, z2, z4, z6):
 def holonomie():
 	global choix, rob
 	odometry_straight_line = 0
+	odometry_straight_line_par = 0
 	odometry_rotation = 0
+	odometry_rotation_par = 0
 	nb_pas_rotation = 0
 	liste = 0
 	x_f_b = 120
@@ -175,7 +177,13 @@ def holonomie():
 				count_pas = 0
 
 			#move(group_pair, group_impair)
+
 			odometry_straight_line += pas
+			if odometry_straight_line_par > 1:
+				odometry_straight_line_par = odometry_straight_line_par - pas
+			else:
+				man = 1
+
 		elif choix == 's':
 			if direction != 's':
 				direction = 's'
@@ -220,7 +228,13 @@ def holonomie():
 				count_pas = 0
 
 			#move(group_pair, group_impair)
+
 			odometry_straight_line += pas
+			if odometry_straight_line_par > 1:
+				odometry_straight_line_par = odometry_straight_line_par - pas
+			else:
+				man = 1
+
 		elif choix == 'd':
 			if direction != 'd':
 				direction = 'd'
@@ -265,7 +279,13 @@ def holonomie():
 				count_pas = 0
 
 			#move(group_pair, group_impair)
+
 			odometry_straight_line += pas
+			if odometry_straight_line_par > 1:
+				odometry_straight_line_par = odometry_straight_line_par - pas
+			else:
+				man = 1
+
 		elif choix == 'q':
 			if direction != 'q':
 				direction = 'q'
@@ -310,7 +330,13 @@ def holonomie():
 				count_pas = 0
 
 			#move(group_pair, group_impair)
+
 			odometry_straight_line += pas
+			if odometry_straight_line_par > 1:
+				odometry_straight_line_par = odometry_straight_line_par - pas
+			else:
+				man = 1
+
 		elif choix == 'a':
 			if direction != 'a':
 				direction = 'a'
@@ -350,6 +376,11 @@ def holonomie():
 			#move(group_pair, group_impair)
 			nb_pas_rotation = nb_pas_rotation - 1
 			odometry_rotation = nb_pas_rotation * angle_rotation
+
+			if odometry_rotation_par > 1:
+				odometry_rotation_par = odometry_rotation_par - angle_rotation
+			else:
+				man = 1
 		elif choix =='e':
 			if direction != 'e':
 				direction = 'e'
@@ -389,6 +420,11 @@ def holonomie():
 			#move(group_pair, group_impair)
 			nb_pas_rotation = nb_pas_rotation + 1
 			odometry_rotation = nb_pas_rotation * angle_rotation
+
+			if odometry_rotation_par > 1:
+				odometry_rotation_par = odometry_rotation_par - angle_rotation
+			else:
+				man = 1
 		elif choix == 'i':
 			count_pas = 10
 			pos_init = 1
@@ -487,6 +523,10 @@ def holonomie():
 					print liste
 				elif choix == 'n':
 					break
+		elif choix == '+':
+			print odometry_rotation_par, ', ', odometry_straight_line_par, '\n'
+			odometry_straight_line_par += 1
+			odometry_rotation_par += 1
 		elif choix == 'm':
 			if manual == 1:
 				manual = 0
@@ -497,7 +537,7 @@ def holonomie():
 		if manual == 1:
 			choix = 0
 
-		print 'odometry_straight_line = ', odometry_straight_line, '; odometry_rotation = ', odometry_rotation, '\n' 
+		#print 'odometry_straight_line = ', odometry_straight_line, '; odometry_rotation = ', odometry_rotation, '\n' 
 		time.sleep(0.002)
 
 def ROB_control(bot):
