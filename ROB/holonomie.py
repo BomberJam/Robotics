@@ -5,7 +5,6 @@ import sys
 import termios, fcntl, sys, os
 from kinematic import *
 from math import *
-from test_mouse import *
 #from movement import *
 #from pypot.robot import from_json
 #from init_by_move import *
@@ -111,6 +110,9 @@ def modification_pair(leg_pair, x2, x4, x6, y2, y4, y6, z2, z4, z6):
 
 def holonomie():
 	global choix, rob
+	odometry_straight_line = 0
+	odometry_rotation = 0
+	nb_pas_rotation = 0
 	liste = 0
 	x_f_b = 120
 	y_f_b = 0
@@ -134,11 +136,11 @@ def holonomie():
 				direction = 'z'
 				count_pas = 10
 				pos_init = 1
-				initialize_to_zero(rob, group_impair, group_pair)
+				#initialize_to_zero(rob, group_impair, group_pair)
 				time.sleep(0.1)
 
 			if pos_init == 1:
-				after_init(group_impair,pas)
+				#after_init(group_impair,pas)
 				pos_init = 0
 
 			if count_pas < 10:
@@ -173,6 +175,7 @@ def holonomie():
 				count_pas = 0
 
 			#move(group_pair, group_impair)
+			odometry_straight_line += pas
 		elif choix == 's':
 			if direction != 's':
 				direction = 's'
@@ -217,6 +220,7 @@ def holonomie():
 				count_pas = 0
 
 			#move(group_pair, group_impair)
+			odometry_straight_line += pas
 		elif choix == 'd':
 			if direction != 'd':
 				direction = 'd'
@@ -261,6 +265,7 @@ def holonomie():
 				count_pas = 0
 
 			#move(group_pair, group_impair)
+			odometry_straight_line += pas
 		elif choix == 'q':
 			if direction != 'q':
 				direction = 'q'
@@ -305,16 +310,17 @@ def holonomie():
 				count_pas = 0
 
 			#move(group_pair, group_impair)
+			odometry_straight_line += pas
 		elif choix == 'a':
 			if direction != 'a':
 				direction = 'a'
 				count_pas = 10
 				pos_init = 1
-				initialize_to_zero(rob, group_impair, group_pair)
+				#initialize_to_zero(rob, group_impair, group_pair)
 				time.sleep(0.1)
 
 			if pos_init == 1:
-				after_init(group_impair,pas)
+				#after_init(group_impair,pas)
 				liste = change_front_back(x_f_b, y_f_b, angle_rotation)
 				x_f_b = liste[0]
 				y_f_b = liste[1]
@@ -342,16 +348,18 @@ def holonomie():
 				count_pas = 0
 
 			#move(group_pair, group_impair)
+			nb_pas_rotation = nb_pas_rotation - 1
+			odometry_rotation = nb_pas_rotation * angle_rotation
 		elif choix =='e':
 			if direction != 'e':
 				direction = 'e'
 				count_pas = 10
 				pos_init = 1
-				initialize_to_zero(rob, group_impair, group_pair)
+				#initialize_to_zero(rob, group_impair, group_pair)
 				time.sleep(0.1)
 
 			if pos_init == 1:
-				after_init(group_impair,pas)
+				#after_init(group_impair,pas)
 				liste = change_front_back(x_f_b, y_f_b, angle_rotation)
 				x_f_b = liste[0]
 				y_f_b = liste[1]
@@ -379,6 +387,8 @@ def holonomie():
 				count_pas = 0
 
 			#move(group_pair, group_impair)
+			nb_pas_rotation = nb_pas_rotation + 1
+			odometry_rotation = nb_pas_rotation * angle_rotation
 		elif choix == 'i':
 			count_pas = 10
 			pos_init = 1
@@ -487,6 +497,7 @@ def holonomie():
 		if manual == 1:
 			choix = 0
 
+		print 'odometry_straight_line = ', odometry_straight_line, '; odometry_rotation = ', odometry_rotation, '\n' 
 		time.sleep(0.002)
 
 def ROB_control(bot):
