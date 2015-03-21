@@ -5,10 +5,12 @@ import sys
 import termios, fcntl, sys, os
 from kinematic import *
 from math import *
+from test_mouse import *
 #from movement import *
 #from pypot.robot import from_json
 #from init_by_move import *
 #from walking import *
+
 
 choix = 0
 
@@ -408,6 +410,73 @@ def holonomie():
 			x_s = liste[0]
 			y_s = liste[1]
 			print liste
+		elif choix == 'g':
+			#initialize_to_zero(rob, group_impair, group_pair)
+			while True:
+				if choix == 'z':
+					group_pair = modification_pair(group_pair, 0, pas, 0, -pas, 0, pas, 0, 0, 0)
+					group_impair = modification_impair(group_impair, -pas, 0, 0, 0, -pas, pas, 0, 0, 0)
+
+					#move(group_pair, group_impair)
+				elif choix == 's':
+					group_pair = modification_pair(group_pair, 0, -pas, 0, -pas, 0, pas, 0, 0, 0)
+					group_impair = modification_impair(group_impair, pas, 0, 0, 0, pas, -pas, 0, 0, 0)
+
+					#move(group_pair, group_impair)
+				elif choix == 'q':
+					group_pair = modification_pair(group_pair, pas, 0, -pas, 0, -pas, 0, 0, 0, 0)
+					group_impair = modification_impair(group_impair, 0, pas, -pas, pas, 0, 0, 0, 0, 0)
+
+					#move(group_pair, group_impair)
+				elif choix == 'd':
+					group_pair = modification_pair(group_pair, -pas, 0, pas, 0, pas, 0, 0, 0, 0)
+					group_impair = modification_impair(group_impair, 0, -pas, pas, -pas, 0, 0, 0, 0, 0)
+
+					#move(group_pair, group_impair)
+				elif choix == 'a':
+					group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), 0, 0, 0)
+					group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s, x_s-120, y_f_b, (y_s-70), (y_s-70), 0, 0, 0)
+
+					#move(group_pair, group_impair)
+				elif choix == 'e':
+					group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), 0, 0, 0)
+					group_impair = modification_impair(group_impair, x_f_b-120, x_s-120, 120-x_s, -y_f_b, (70-y_s), -(y_s-70), 0, 0, 0)
+
+					#move(group_pair, group_impair)
+				elif choix == 'r':
+					group_pair = modification_pair(group_pair, 0, 0, 0, 0, 0, 0, -6, -6, -6)
+					group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, -6, -6, -6)
+
+				 	#move(group_pair, group_impair)
+				elif choix == 'f':
+					group_pair = modification_pair(group_pair, 0, 0, 0, 0, 0, 0, 6, 6, 6)
+					group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, 6, 6, 6)
+
+				 	#move(group_pair, group_impair)
+				elif choix == 'w':
+					angle = angle + 0.5
+					print angle
+					liste = change_front_back(x_f_b, y_f_b, angle)
+					x_f_b = liste[0]
+					y_f_b = liste[1]
+					print liste
+					liste = change_side(x_s, y_s, angle)
+					x_s = liste[0]
+					y_s = liste[1]
+					print liste
+				elif choix == 'x':
+					angle = angle - 0.5
+					print angle
+					liste = change_front_back(x_f_b, y_f_b, angle)
+					x_f_b = liste[0]
+					y_f_b = liste[1]
+					print liste
+					liste = change_side(x_s, y_s, angle)
+					x_s = liste[0]
+					y_s = liste[1]
+					print liste
+				elif choix == 'n':
+					break
 		elif choix == 'm':
 			if manual == 1:
 				manual = 0
