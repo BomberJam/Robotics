@@ -1,14 +1,14 @@
-import pypot.dynamixel
+#import pypot.dynamixel
 import time
 import threading
 import sys
 import termios, fcntl, sys, os
 from kinematic import *
 from math import *
-from movement import *
-from pypot.robot import from_json
-from init_by_move import *
-from walking import *
+#from movement import *
+#from pypot.robot import from_json
+#from init_by_move import *
+#from walking import *
 
 choix = 0
 
@@ -34,7 +34,7 @@ def keyevent():
 		while choix != 'n':
 			try:
 				choix = sys.stdin.read(1)
-				#print "value changed", repr(choix)
+				print "value changed", repr(choix)
 			except IOError: pass
 	finally:
 		termios.tcsetattr(fd, termios.TCSAFLUSH, oldterm)
@@ -116,7 +116,8 @@ def holonomie():
 	y_s = 70
 	group_pair = [120, 120, 120, 70, 0, -70, -70, -70, -70]
 	group_impair = [120, 120, 120, 0, -70, 70, -70, -70, -70]
-	angle = 0.5
+	angle = 0
+	angle_rotation = 0.5
 	manual = 1
 	pas = 2
 	count_pas = 10
@@ -138,8 +139,6 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-
-
 			if count_pas < 10:
 				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b + pas, 120-x_s, (y_s-70) -pas, y_f_b, -(70-y_s) + pas, 0, 0, 0)
 				group_impair = modification_impair(group_impair, x_f_b-120 + pas, x_s-120, 120-x_s, -y_f_b, (70-y_s) + pas, -(y_s-70) -pas, 6, 6, 6)
@@ -152,9 +151,6 @@ def holonomie():
 			elif count_pas < 40:
 				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120 -pas, x_s-120, -(y_s-70) + pas, -y_f_b, (70-y_s) -pas, -6, -6, -6)				
 				group_impair = modification_impair(group_impair, 120-x_f_b -pas, 120-x_s, x_s-120, y_f_b, (y_s-70) -pas, (y_s-70) + pas, 0, 0, 0)
-
-
-
 
 			# if count_pas < 10 :
 			# 	group_pair = modification_pair(group_pair, 0, pas, 0 , -pas, 0, pas, 0, 0, 0)
@@ -174,7 +170,7 @@ def holonomie():
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
+			#move(group_pair, group_impair)
 		elif choix == 's':
 			if direction != 's':
 				direction = 's'
@@ -186,8 +182,6 @@ def holonomie():
 			if pos_init == 1:
 				after_init(group_impair,pas)
 				pos_init = 0
-
-
 
 			if count_pas < 10:
 				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b -pas, 120-x_s, (y_s-70) + pas, y_f_b, -(70-y_s) -pas, 0, 0, 0)
@@ -201,9 +195,6 @@ def holonomie():
 			elif count_pas < 40:
 				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120 + pas, x_s-120, -(y_s-70) -pas, -y_f_b, (70-y_s) + pas, -6, -6, -6)				
 				group_impair = modification_impair(group_impair, 120-x_f_b + pas, 120-x_s, x_s-120, y_f_b, (y_s-70) + pas, (y_s-70) -pas, 0, 0, 0)
-
-
-
 
 			# if count_pas < 10 :
 			# 	group_pair = modification_pair(group_pair, 0, -pas, 0 , pas, 0, -pas, 0, 0, 0)
@@ -223,9 +214,7 @@ def holonomie():
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
-
-
+			#move(group_pair, group_impair)
 		elif choix == 'd':
 			if direction != 'd':
 				direction = 'd'
@@ -237,8 +226,6 @@ def holonomie():
 			if pos_init == 1:
 				after_init(group_impair,pas)
 				pos_init = 0
-
-
 
 			if count_pas < 10:
 				group_pair = modification_pair(group_pair, x_s-120 -pas, 120-x_f_b, 120-x_s + pas, (y_s-70), y_f_b -pas, -(70-y_s), 0, 0, 0)
@@ -252,9 +239,6 @@ def holonomie():
 			elif count_pas < 40:
 				group_pair = modification_pair(group_pair, 120-x_s + pas, x_f_b-120, x_s-120 -pas, -(y_s-70), -y_f_b + pas, (70-y_s), -6, -6, -6)				
 				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s -pas, x_s-120 + pas, y_f_b + pas, (y_s-70), (y_s-70), 0, 0, 0)
-
-
-
 
 			# if count_pas < 10 :
 			# 	group_pair = modification_pair(group_pair, -pas, 0, pas , 0, -pas, 0, 0, 0, 0)
@@ -274,8 +258,7 @@ def holonomie():
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
-
+			#move(group_pair, group_impair)
 		elif choix == 'q':
 			if direction != 'q':
 				direction = 'q'
@@ -287,8 +270,6 @@ def holonomie():
 			if pos_init == 1:
 				after_init(group_impair,pas)
 				pos_init = 0
-
-
 
 			if count_pas < 10:
 				group_pair = modification_pair(group_pair, x_s-120 + pas, 120-x_f_b, 120-x_s -pas, (y_s-70), y_f_b + pas, -(70-y_s), 0, 0, 0)
@@ -302,10 +283,6 @@ def holonomie():
 			elif count_pas < 40:
 				group_pair = modification_pair(group_pair, 120-x_s -pas, x_f_b-120, x_s-120 + pas, -(y_s-70), -y_f_b -pas, (70-y_s), -6, -6, -6)				
 				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s + pas, x_s-120 -pas, y_f_b -pas, (y_s-70), (y_s-70), 0, 0, 0)
-
-
-
-
 
 			# if count_pas < 10 :
 			# 	group_pair = modification_pair(group_pair, pas, 0, -pas , 0, pas, 0, 0, 0, 0)
@@ -325,7 +302,7 @@ def holonomie():
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
+			#move(group_pair, group_impair)
 		elif choix == 'a':
 			if direction != 'a':
 				direction = 'a'
@@ -336,14 +313,13 @@ def holonomie():
 
 			if pos_init == 1:
 				after_init(group_impair,pas)
-				liste = change_front_back(x_f_b, y_f_b, angle)
+				liste = change_front_back(x_f_b, y_f_b, angle_rotation)
 				x_f_b = liste[0]
 				y_f_b = liste[1]
-				liste = change_side(x_s, y_s, angle)
+				liste = change_side(x_s, y_s, angle_rotation)
 				x_s = liste[0]
 				y_s = liste[1]
 				pos_init = 0
-
 
 			if count_pas < 10:
 				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), 0, 0, 0)
@@ -363,7 +339,7 @@ def holonomie():
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
+			#move(group_pair, group_impair)
 		elif choix =='e':
 			if direction != 'e':
 				direction = 'e'
@@ -374,14 +350,13 @@ def holonomie():
 
 			if pos_init == 1:
 				after_init(group_impair,pas)
-				liste = change_front_back(x_f_b, y_f_b, angle)
+				liste = change_front_back(x_f_b, y_f_b, angle_rotation)
 				x_f_b = liste[0]
 				y_f_b = liste[1]
-				liste = change_side(x_s, y_s, angle)
+				liste = change_side(x_s, y_s, angle_rotation)
 				x_s = liste[0]
 				y_s = liste[1]
 				pos_init = 0
-
 
 			if count_pas < 10 :
 				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), 0, 0, 0)		
@@ -401,17 +376,19 @@ def holonomie():
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
+			#move(group_pair, group_impair)
 		elif choix == 'i':
 			count_pas = 10
 			pos_init = 1
-			initialize_to_zero(rob, group_impair, group_pair)
+			#initialize_to_zero(rob, group_impair, group_pair)
 			x_f_b = 120
 			y_f_b = 0
 			x_s = 120
 			y_s = 70
+			angle = 0
 		elif choix == 'w':
-			angle += 0.5
+			angle = angle + 0.5
+			print angle
 			liste = change_front_back(x_f_b, y_f_b, angle)
 			x_f_b = liste[0]
 			y_f_b = liste[1]
@@ -421,7 +398,8 @@ def holonomie():
 			y_s = liste[1]
 			print liste
 		elif choix == 'x':
-			angle -= 0.5
+			angle = angle - 0.5
+			print angle
 			liste = change_front_back(x_f_b, y_f_b, angle)
 			x_f_b = liste[0]
 			y_f_b = liste[1]
