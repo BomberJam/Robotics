@@ -7,7 +7,29 @@ from math import *
 
 
 
-def initialize_to_zero(rob, group_impair, group_pair):
+def initialize_to_zero(rob, group_impair, group_pair, hauteur = 0):
+
+    group_pair[0] = int (group_pair[0])
+    group_pair[1] = int (group_pair[1])
+    group_pair[2] = int (group_pair[2])
+    group_pair[3] = int (group_pair[3])
+    group_pair[4] = int (group_pair[4])
+    group_pair[5] = int (group_pair[5])
+    group_pair[6] = int (group_pair[6])
+    group_pair[7] = int (group_pair[7])
+    group_pair[8] = int (group_pair[8])
+
+    group_impair[0] = int (group_impair[0])
+    group_impair[1] = int (group_impair[1])
+    group_impair[2] = int (group_impair[2])
+    group_impair[3] = int (group_impair[3])
+    group_impair[4] = int (group_impair[4])
+    group_impair[5] = int (group_impair[5])
+    group_impair[6] = int (group_impair[6])
+    group_impair[7] = int (group_impair[7])
+    group_impair[8] = int (group_impair[8])
+
+
     etat = 0
     x1 = 0
     x2 = 0
@@ -115,48 +137,50 @@ def initialize_to_zero(rob, group_impair, group_pair):
             yy3 = 1
             etat += 1
 
-        if group_pair[6] < -70:
+        if group_pair[6] < -70 + hauteur:
             group_pair[6] += 1
-        elif group_pair[6] > -70:
+        elif group_pair[6] > -70 - hauteur:
             group_pair[6] -= 1
         elif z1 == 0:
             z1 = 1
             etat += 1
-        if group_pair[7] < -70:
+        if group_pair[7] < -70 + hauteur:
             group_pair[7] += 1
-        elif group_pair[7] > -70:
+        elif group_pair[7] > -70 - hauteur:
             group_pair[7] -= 1
         elif z2 == 0:
             z2 = 1
             etat += 1
-        if group_pair[8] < -70:
+        if group_pair[8] < -70 + hauteur:
             group_pair[8] += 1
-        elif group_pair[8] > -70:
+        elif group_pair[8] > -70 - hauteur:
             group_pair[8] -= 1
         elif z3 == 0:
             z3 = 1
             etat += 1
-        if group_impair[6] < -70:
+        if group_impair[6] < -70 + hauteur:
             group_impair[6] += 1
-        elif group_impair[6] > -70:
+        elif group_impair[6] > -70 - hauteur:
             group_impair[6] -= 1
         elif zz1 == 0:
             zz1 = 1
             etat += 1
-        if group_impair[7] < -70:
+        if group_impair[7] < -70 + hauteur:
             group_impair[7] += 1
-        elif group_impair[7] > -70:
+        elif group_impair[7] > -70 - hauteur:
             group_impair[7] -= 1
         elif zz2 == 0:
             zz2 = 1
             etat += 1
-        if group_impair[8] < -70:
+        if group_impair[8] < -70 + hauteur:
             group_impair[8] += 1
-        elif group_impair[8] > -70:
+        elif group_impair[8] > -70 - hauteur:
             group_impair[8] -= 1
         elif zz3 == 0:
             zz3 = 1
             etat += 1
+
+        print group_impair, '\n', group_pair
 
         set_pos_to_leg(group_impair[0], group_impair[3], group_impair[6], rob.leg1)
         set_pos_to_leg(group_pair[0], group_pair[3], group_pair[6], rob.leg2)

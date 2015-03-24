@@ -18,31 +18,37 @@ debut = 1
 leg = 0
 
 def calcule_difference(x, y, z):
-	global x_tmp, y_tmp, z_tmp, debut
+	global x_tmp, y_tmp, debut
 	if debut == 1:
 		x_tmp = x
 		y_tmp = y
-		z_tmp = z
 		debut = 0
 
-	liste = [x-x_tmp, y_tmp-y, z_tmp-z]
+	liste = [x-x_tmp, y_tmp-y]
 	x_tmp = x
 	y_tmp = y
-	z_tmp = z
 
 	return liste
 
+def incre_z(event):
+	global z_tmp
+	z_tmp = z_tmp + 1
+
+def decre_z(event):
+	global z_tmp
+	z_tmp = z_tmp - 1
+
 def xy(event):
-	global group_impair, group_pair, leg
+	global group_impair, group_pair, leg, z_tmp
 	liste = calcule_difference(event.x/10, event.y/10, event.delta/10)
 	xm = liste[0]
 	ym = liste[1]
-	zm = liste[2]
-	group_impair[0] = group_impair[0] + xm
-	group_impair[3] = group_impair[3] + ym 
-	group_impair[6] = group_impair[6] + zm 
-	xy_data = "x1=%d,  y1=%d,  z1=%d,  patte=%s" % (group_impair[0], group_impair[3], group_impair[6], leg)
-	set_pos_to_leg (xm, ym, zm, leg)
+	group_impair[0] = group_impair[0] + ym
+	group_impair[3] = group_impair[3] - xm 
+	group_impair[6] = group_impair[6] + z_tmp 
+	z_tmp = 0
+	xy_data = "x1=%d,  y1=%d,  z1=%d" % (group_impair[0], group_impair[3], group_impair[6])
+	set_pos_to_leg (group_impair[0], group_impair[3], group_impair[6], leg)
 	lab=Label(win,text=xy_data)
 	lab.grid(row=0,column=0)
 
@@ -53,33 +59,35 @@ def Control_mouse(impair, pair, l):
 	leg = l
 	win.title("Moving leg's windows")
 	win.bind("<Motion>",xy)
+	win.bind("<B1-Motion>", decre_z)
+	win.bind("<B3-Motion>", incre_z)
 	mainloop()
 
 
 
 if __name__ == '__main__':
-	pair = [120, 120, 120, 70, 0, -70, -70, -70, -70]
-	impair = [120, 120, 120, 0, -70, 70, -70, -70, -70]
-
-	choix = input ('choix patte: ')
-	if choix ==  1:
-		leg = 'rob.leg1'
-	elif choix == 2:
-		leg = 'rob.leg2'
-	elif choix == 3:
-		leg = 'rob.leg3'
-	elif choix == 4:
-		leg = 'rob.leg4'
-	elif choix == 5:
-		leg = 'rob.leg5'
-	elif choix == 6:
-		leg = 'rob.leg6'
-
 	rob = from_json('rob.json')
 
 	all_motors_not_compliant (rob)
 
-	initialize_to_zero(rob, impair, gpair)
+	pair = [120, 120, 120, 70, 0, -70, -70, -70, -70]
+	impair = [120, 120, 120, 0, -70, 70, -70, -70, -70]
+
+	initialize_to_zero(rob, impair, pair)
+
+	choix = input ('choix patte: ')
+	if choix ==  1:
+		leg = rob.leg1
+	elif choix == 2:
+		leg = rob.leg2
+	elif choix == 3:
+		leg = rob.leg3
+	elif choix == 4:
+		leg = rob.leg4
+	elif choix == 5:
+		leg = rob.leg5
+	elif choix == 6:
+		leg = rob.leg6
 
 	Control_mouse(impair, pair, leg)
 
