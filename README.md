@@ -15,3 +15,12 @@ e: Rotation du robot vers la droite.<br />
 -: Baisser la vitesse de déplacement et de rotation du robot.<br />
 m: Marche automatique (nul besoin d'appuyer sur z).<br />
 p: Marche plus "fluide" que la marche automatique.<br />
+
+
+Obtenir une instance Robot à partir d'un fichier json 
+Position initiale stable
+Holonomie 
+Odométrie 
+Commande au clavier
+Commande d'une patte à la souris
+Bouger le centre du robot en X Y et Z
