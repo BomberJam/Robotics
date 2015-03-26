@@ -14,6 +14,5 @@ def all_motors_not_compliant (rob):
         m.compliant = False
 
 def set_motor_speed(rob, speed):
-    for m in rob.motors:
-        m.goal_speed = speed
-
+	for m in rob.motors:
+		m.goal_speed = speed

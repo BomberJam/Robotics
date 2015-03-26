@@ -35,7 +35,7 @@ def keyevent():
 		while choix != 'n':
 			try:
 				choix = sys.stdin.read(1)
-				print "value changed", repr(choix)
+				#print "value changed", repr(choix)
 			except IOError: pass
 	finally:
 		termios.tcsetattr(fd, termios.TCSAFLUSH, oldterm)
@@ -43,39 +43,44 @@ def keyevent():
 
 
 
-def move(group_pair, group_impair):
-    set_pos_to_leg(group_impair[0], group_impair[3], group_impair[6], rob.leg1)
-    set_pos_to_leg(group_pair[0], group_pair[3], group_pair[6], rob.leg2)
-    set_pos_to_leg(group_impair[1], group_impair[4], group_impair[7], rob.leg3)
-    set_pos_to_leg(group_pair[1], group_pair[4], group_pair[7], rob.leg4)
-    set_pos_to_leg(group_impair[2], group_impair[5], group_impair[8], rob.leg5)
-    set_pos_to_leg(group_pair[2], group_pair[5], group_pair[8], rob.leg6)
-
-
 def change_front_back(x1, y1, angle):
 	x = x1*cos(radians(angle)) - y1*sin(radians(angle))
 	y = x1*sin(radians(angle)) + y1*cos(radians(angle))
+	if y > 0:
+		y = y - 180
+	elif y < 0:
+		y = 180 - y
 
 	return [x, y]
 
 def change_side(x1, y1, angle):
 	x = x1*cos(radians(angle)) - y1*sin(radians(angle))
 	y = x1*sin(radians(angle)) + y1*cos(radians(angle))
+	if x > 0:
+		x = x -160
+	elif x < 0:
+		x = 160 - x
+
+	if y > 0:
+		y = y - 95
+	elif y < 0:
+		y = 95 - y
 
 	return [x, y]
 
 def after_init(leg_impair, pas):
-	# a modifier
 	pas = 10 * 6
 	parcour = 0
+
 	while parcour != pas:
+
 		leg_impair[6] += 1
 		leg_impair[7] += 1
-		leg_impair[8] += 1
+		leg_impair[8] += 1    
 
-		set_pos_to_leg(leg_impair[0], leg_impair[3], leg_impair[6], rob.leg1)
-		set_pos_to_leg(leg_impair[1], leg_impair[4], leg_impair[7], rob.leg3)
-		set_pos_to_leg(leg_impair[2], leg_impair[5], leg_impair[8], rob.leg5)
+		set_pos_to_leg(leg_impair[3]-60, -leg_impair[0], leg_impair[6], rob.leg1)
+		set_pos_to_leg(leg_impair[1]-40, -leg_impair[4]+25, leg_impair[7], rob.leg3)
+		set_pos_to_leg(leg_impair[2]-40, leg_impair[5]-25, leg_impair[8], rob.leg5)
 
 		parcour += 1
 		time.sleep(0.005)
@@ -115,13 +120,16 @@ def holonomie():
 	odometry_rotation = 0
 	odometry_rotation_par = 0
 	nb_pas_rotation = 0
+	start_odo = 0
+
 	liste = 0
-	x_f_b = 120
-	y_f_b = 0
-	x_s = 120
-	y_s = 70
-	group_pair = [120, 120, 120, 70, 0, -70, -70, -70, -70]
-	group_impair = [120, 120, 120, 0, -70, 70, -70, -70, -70]
+	x_f_b = 0
+	y_f_b = 180
+	x_s = 160
+	y_s = 95
+	group_impair = [0, 160, 160, 180, 95, 95, -70, -70, -70]
+	group_pair = [160, 0, 160, 95, 180, 95, -70, -70, -70]
+
 	hauteur = 0
 	angle = 0
 	angle_rotation = 0.5
@@ -129,7 +137,7 @@ def holonomie():
 	pas = 2
 	count_pas = 10
 	pos_init = 1
-	direction = 0
+	direction = 0  
 
 	while True:
 		verrou.acquire()
@@ -147,45 +155,33 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-			if count_pas < 10:
-				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b + pas, 120-x_s, (y_s-70) -pas, y_f_b, -(70-y_s) + pas, 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b-120 + pas, x_s-120, 120-x_s, -y_f_b, (70-y_s) + pas, -(y_s-70) -pas, 6, 6, 6)
+			if count_pas < 10 :
+				group_pair = modification_pair(group_pair, 0, 0, 0, -pas, pas, -pas, 0, 0, 0)
+				group_impair = modification_impair(group_impair, 0, 0, 0, pas, -pas, -pas, 6, 6, 6)
 			elif count_pas < 20:
-				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b + pas, 120-x_s, (y_s-70) -pas, y_f_b, -(70-y_s) + pas, 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b-120 + pas, x_s-120, 120-x_s, -y_f_b, (70-y_s) + pas, -(y_s-70) -pas, -6, -6, -6)
+				group_pair = modification_pair(group_pair, 0, 0, 0, -pas, pas, -pas, 0, 0, 0)	
+				group_impair = modification_impair(group_impair, 0, 0, 0, pas, -pas, -pas, -6, -6, -6)
 			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120 -pas, x_s-120, -(y_s-70) + pas, -y_f_b, (70-y_s) -pas, 6, 6, 6)		
-				group_impair = modification_impair(group_impair, 120-x_f_b -pas, 120-x_s, x_s-120, y_f_b, (y_s-70) -pas, (y_s-70) + pas, 0, 0, 0)
+				group_pair = modification_pair(group_pair, 0, 0, 0, pas, -pas, pas, 6, 6, 6)					
+				group_impair = modification_impair(group_impair, 0, 0, 0, -pas, pas, pas, 0, 0, 0)
 			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120 -pas, x_s-120, -(y_s-70) + pas, -y_f_b, (70-y_s) -pas, -6, -6, -6)				
-				group_impair = modification_impair(group_impair, 120-x_f_b -pas, 120-x_s, x_s-120, y_f_b, (y_s-70) -pas, (y_s-70) + pas, 0, 0, 0)
-
-			# if count_pas < 10 :
-			# 	group_pair = modification_pair(group_pair, 0, pas, 0 , -pas, 0, pas, 0, 0, 0)
-			# 	group_impair = modification_impair(group_impair, pas, 0, 0, 0, pas, -pas, 6, 6, 6)
-			# elif count_pas < 20:
-			# 	group_pair = modification_pair(group_pair, 0, pas, 0 , -pas, 0, pas, 0, 0, 0)	
-			# 	group_impair = modification_impair(group_impair, pas, 0, 0, 0, pas, -pas, -6, -6, -6)
-			# elif count_pas < 30:
-			# 	group_pair = modification_pair(group_pair, 0, -pas, 0 , pas, 0, -pas, 6, 6, 6)					
-			# 	group_impair = modification_impair(group_impair, -pas, 0, 0, 0, -pas, pas, 0, 0, 0)
-			# elif count_pas < 40:
-			# 	group_pair = modification_pair(group_pair, 0, -pas, 0 , pas, 0, -pas, -6, -6, -6)					
-			# 	group_impair = modification_impair(group_impair, -pas, 0, 0, 0, -pas, pas, 0, 0, 0)
+				group_pair = modification_pair(group_pair, 0, 0, 0, pas, -pas, pas, -6, -6, -6)					
+				group_impair = modification_impair(group_impair, 0, 0, 0, -pas, pas, pas, 0, 0, 0)
 
 			count_pas += 1	
 
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
+			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
 			odometry_straight_line += pas
 			if odometry_straight_line_par > 1:
 				odometry_straight_line_par = odometry_straight_line_par - pas
-			else:
+			elif start_odo == 1:
 				choix = 0
-				man = 1
+				manual = 1
+				start_odo = 0
 
 		elif choix == 's':
 			if direction != 's':
@@ -199,45 +195,34 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-			if count_pas < 10:
-				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b -pas, 120-x_s, (y_s-70) + pas, y_f_b, -(70-y_s) -pas, 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b-120 -pas, x_s-120, 120-x_s, -y_f_b, (70-y_s) -pas, -(y_s-70) + pas, 6, 6, 6)
+			if count_pas < 10 :
+				group_pair = modification_pair(group_pair, 0, 0, 0, pas, -pas, pas, 0, 0, 0)
+				group_impair = modification_impair(group_impair, 0, 0, 0, -pas, pas, pas, 6, 6, 6)
 			elif count_pas < 20:
-				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b -pas, 120-x_s, (y_s-70) + pas, y_f_b, -(70-y_s) -pas, 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b-120 -pas, x_s-120, 120-x_s, -y_f_b, (70-y_s) -pas, -(y_s-70) + pas, -6, -6, -6)
+				group_pair = modification_pair(group_pair, 0, 0, 0, pas, -pas, pas, 0, 0, 0)	
+				group_impair = modification_impair(group_impair, 0, 0, 0, -pas, pas, pas, -6, -6, -6)
 			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120 + pas, x_s-120, -(y_s-70) -pas, -y_f_b, (70-y_s) + pas, 6, 6, 6)		
-				group_impair = modification_impair(group_impair, 120-x_f_b + pas, 120-x_s, x_s-120, y_f_b, (y_s-70) + pas, (y_s-70) -pas, 0, 0, 0)
+				group_pair = modification_pair(group_pair, 0, 0, 0, -pas, pas, -pas, 6, 6, 6)					
+				group_impair = modification_impair(group_impair, 0, 0, 0, pas, -pas, -pas, 0, 0, 0)
 			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120 + pas, x_s-120, -(y_s-70) -pas, -y_f_b, (70-y_s) + pas, -6, -6, -6)				
-				group_impair = modification_impair(group_impair, 120-x_f_b + pas, 120-x_s, x_s-120, y_f_b, (y_s-70) + pas, (y_s-70) -pas, 0, 0, 0)
-
-			# if count_pas < 10 :
-			# 	group_pair = modification_pair(group_pair, 0, -pas, 0 , pas, 0, -pas, 0, 0, 0)
-			# 	group_impair = modification_impair(group_impair, -pas, 0, 0, 0, -pas, pas, 6, 6, 6)
-			# elif count_pas < 20:
-			# 	group_pair = modification_pair(group_pair, 0, -pas, 0 , pas, 0, -pas, 0, 0, 0)	
-			# 	group_impair = modification_impair(group_impair, -pas, 0, 0, 0, -pas, pas, -6, -6, -6)
-			# elif count_pas < 30:
-			# 	group_pair = modification_pair(group_pair, 0, pas, 0 , -pas, 0, pas, 6, 6, 6)					
-			# 	group_impair = modification_impair(group_impair, pas, 0, 0, 0, pas, -pas, 0, 0, 0)
-			# elif count_pas < 40:
-			# 	group_pair = modification_pair(group_pair, 0, pas, 0 , -pas, 0, pas, -6, -6, -6)					
-			# 	group_impair = modification_impair(group_impair, pas, 0, 0, 0, pas, -pas, 0, 0, 0)
+				group_pair = modification_pair(group_pair, 0, 0, 0, -pas, pas, -pas, -6, -6, -6)					
+				group_impair = modification_impair(group_impair, 0, 0, 0, pas, -pas, -pas, 0, 0, 0)
 
 			count_pas += 1	
 
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
+
+			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
 			odometry_straight_line += pas
 			if odometry_straight_line_par > 1:
 				odometry_straight_line_par = odometry_straight_line_par - pas
-			else:
+			elif start_odo == 1:
 				choix = 0
-				man = 1
+				manual = 1
+				start_odo = 0
 
 		elif choix == 'd':
 			if direction != 'd':
@@ -251,45 +236,34 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-			if count_pas < 10:
-				group_pair = modification_pair(group_pair, x_s-120 -pas, 120-x_f_b, 120-x_s + pas, (y_s-70), y_f_b -pas, -(70-y_s), 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120 + pas, 120-x_s -pas, -y_f_b -pas, (70-y_s), -(y_s-70), 6, 6, 6)
+			if count_pas < 10 :
+				group_pair = modification_pair(group_pair, -pas, -pas, pas, 0, 0, 0, 0, 0, 0)
+				group_impair = modification_impair(group_impair, pas, pas, -pas, 0, 0, 0, 6, 6, 6)
 			elif count_pas < 20:
-				group_pair = modification_pair(group_pair, x_s-120 -pas, 120-x_f_b, 120-x_s + pas, (y_s-70), y_f_b -pas, -(70-y_s), 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120 + pas, 120-x_s -pas, -y_f_b -pas, (70-y_s), -(y_s-70), -6, -6, -6)
+				group_pair = modification_pair(group_pair, -pas, -pas, pas, 0, 0, 0, 0, 0, 0)	
+				group_impair = modification_impair(group_impair, pas, pas, -pas, 0, 0, 0, -6, -6, -6)
 			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, 120-x_s + pas, x_f_b-120, x_s-120 -pas, -(y_s-70), -y_f_b + pas, (70-y_s), 6, 6, 6)		
-				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s -pas, x_s-120 + pas, y_f_b + pas, (y_s-70), (y_s-70), 0, 0, 0)
+				group_pair = modification_pair(group_pair, pas, pas, -pas, 0, 0, 0, 6, 6, 6)					
+				group_impair = modification_impair(group_impair, -pas, -pas, pas, 0, 0, 0, 0, 0, 0)
 			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, 120-x_s + pas, x_f_b-120, x_s-120 -pas, -(y_s-70), -y_f_b + pas, (70-y_s), -6, -6, -6)				
-				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s -pas, x_s-120 + pas, y_f_b + pas, (y_s-70), (y_s-70), 0, 0, 0)
-
-			# if count_pas < 10 :
-			# 	group_pair = modification_pair(group_pair, -pas, 0, pas , 0, -pas, 0, 0, 0, 0)
-			# 	group_impair = modification_impair(group_impair, 0, pas, -pas, -pas, 0, 0, 6, 6, 6)
-			# elif count_pas < 20:
-			# 	group_pair = modification_pair(group_pair, -pas, 0, pas , 0, -pas, 0, 0, 0, 0)	
-			# 	group_impair = modification_impair(group_impair, 0, pas, -pas, -pas, 0, 0, -6, -6, -6)
-			# elif count_pas < 30:
-			# 	group_pair = modification_pair(group_pair, pas, 0, -pas , 0, pas, 0, 6, 6, 6)					
-			# 	group_impair = modification_impair(group_impair, 0, -pas, pas, pas, 0, 0, 0, 0, 0)
-			# elif count_pas < 40:
-			# 	group_pair = modification_pair(group_pair, pas, 0, -pas , 0, pas, 0, -6, -6, -6)					
-			# 	group_impair = modification_impair(group_impair, 0, -pas, pas, pas, 0, 0, 0, 0, 0)
+				group_pair = modification_pair(group_pair, pas, pas, -pas, 0, 0, 0, -6, -6, -6)					
+				group_impair = modification_impair(group_impair, -pas, -pas, pas, 0, 0, 0, 0, 0, 0)
 
 			count_pas += 1	
 
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
+
+			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
 			odometry_straight_line += pas
 			if odometry_straight_line_par > 1:
 				odometry_straight_line_par = odometry_straight_line_par - pas
-			else:
+			elif start_odo == 1:
 				choix = 0
-				man = 1
+				manual = 1
+				start_odo = 0
 
 		elif choix == 'q':
 			if direction != 'q':
@@ -303,48 +277,37 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-			if count_pas < 10:
-				group_pair = modification_pair(group_pair, x_s-120 + pas, 120-x_f_b, 120-x_s -pas, (y_s-70), y_f_b + pas, -(70-y_s), 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120 -pas, 120-x_s + pas, -y_f_b + pas, (70-y_s), -(y_s-70), 6, 6, 6)
+			if count_pas < 10 :
+				group_pair = modification_pair(group_pair, pas, pas, -pas, 0, 0, 0, 0, 0, 0)
+				group_impair = modification_impair(group_impair, -pas, -pas, pas, 0, 0, 0, 6, 6, 6)
 			elif count_pas < 20:
-				group_pair = modification_pair(group_pair, x_s-120 + pas, 120-x_f_b, 120-x_s -pas, (y_s-70), y_f_b + pas, -(70-y_s), 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120 -pas, 120-x_s + pas, -y_f_b + pas, (70-y_s), -(y_s-70), -6, -6, -6)
+				group_pair = modification_pair(group_pair, pas, pas, -pas, 0, 0, 0, 0, 0, 0)	
+				group_impair = modification_impair(group_impair, -pas, -pas, pas, 0, 0, 0, -6, -6, -6)
 			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, 120-x_s -pas, x_f_b-120, x_s-120 + pas, -(y_s-70), -y_f_b -pas, (70-y_s), 6, 6, 6)		
-				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s + pas, x_s-120 -pas, y_f_b -pas, (y_s-70), (y_s-70), 0, 0, 0)
+				group_pair = modification_pair(group_pair, -pas, -pas, pas, 0, 0, 0, 6, 6, 6)					
+				group_impair = modification_impair(group_impair, pas, pas, -pas, 0, 0, 0, 0, 0, 0)
 			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, 120-x_s -pas, x_f_b-120, x_s-120 + pas, -(y_s-70), -y_f_b -pas, (70-y_s), -6, -6, -6)				
-				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s + pas, x_s-120 -pas, y_f_b -pas, (y_s-70), (y_s-70), 0, 0, 0)
-
-			# if count_pas < 10 :
-			# 	group_pair = modification_pair(group_pair, pas, 0, -pas , 0, pas, 0, 0, 0, 0)
-			# 	group_impair = modification_impair(group_impair, 0, -pas, pas, pas, 0, 0, 6, 6, 6)
-			# elif count_pas < 20:
-			# 	group_pair = modification_pair(group_pair, pas, 0, -pas , 0, pas, 0, 0, 0, 0)	
-			# 	group_impair = modification_impair(group_impair, 0, -pas, pas, pas, 0, 0, -6, -6, -6)
-			# elif count_pas < 30:
-			# 	group_pair = modification_pair(group_pair, -pas, 0, pas , 0, -pas, 0, 6, 6, 6)					
-			# 	group_impair = modification_impair(group_impair, 0, pas, -pas, -pas, 0, 0, 0, 0, 0)
-			# elif count_pas < 40:
-			# 	group_pair = modification_pair(group_pair, -pas, 0, pas , 0, -pas, 0, -6, -6, -6)					
-			# 	group_impair = modification_impair(group_impair, 0, pas, -pas, -pas, 0, 0, 0, 0, 0)
+				group_pair = modification_pair(group_pair, -pas, -pas, pas, 0, 0, 0, -6, -6, -6)					
+				group_impair = modification_impair(group_impair, pas, pas, -pas, 0, 0, 0, 0, 0, 0)
 
 			count_pas += 1	
 
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
+
+			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
 			odometry_straight_line += pas
 			if odometry_straight_line_par > 1:
 				odometry_straight_line_par = odometry_straight_line_par - pas
-			else:
+				print odometry_straight_line_par
+			elif start_odo == 1:
 				choix = 0
-				man = 1
+				manual = 1
+				start_odo = 0
 
 		elif choix == 'a':
-			print choix
 			if direction != 'a':
 				direction = 'a'
 				count_pas = 10
@@ -353,6 +316,10 @@ def holonomie():
 				time.sleep(0.1)
 
 			if pos_init == 1:
+				x_f_b = 0
+				y_f_b = 180
+				x_s = 160
+				y_s = 95
 				after_init(group_impair,pas)
 				liste = change_front_back(x_f_b, y_f_b, angle_rotation)
 				x_f_b = liste[0]
@@ -363,204 +330,191 @@ def holonomie():
 				pos_init = 0
 
 			if count_pas < 10:
-				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120, 120-x_s, -y_f_b, (70-y_s), -(y_s-70), 6, 6, 6)
+				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, 0, 0, 0)
+				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, 6, 6, 6)
 			elif count_pas < 20:
-				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120, 120-x_s, -y_f_b, (70-y_s), -(y_s-70), -6, -6, -6)
+				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, 0, 0, 0)
+				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, -6, -6, -6)
 			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), 6, 6, 6)		
-				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s, x_s-120, y_f_b, (y_s-70), (y_s-70), 0, 0, 0)
+				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, 6, 6, 6)		
+				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, 0, 0, 0)
 			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), -6, -6, -6)				
-				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s, x_s-120, y_f_b, (y_s-70), (y_s-70), 0, 0, 0)
+				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, -6, -6, -6)				
+				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, 0, 0, 0)
 
 			count_pas += 1	
 
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
+			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
+
 			nb_pas_rotation = nb_pas_rotation - 1
 			odometry_rotation = nb_pas_rotation * angle_rotation
 
 			if odometry_rotation_par > 1:
 				odometry_rotation_par = odometry_rotation_par - angle_rotation
-			else:
+			elif start_odo == 1:
 				choix = 0
-				man = 1
+				manual = 1
+				start_odo = 0
 		elif choix =='e':
 			if direction != 'e':
 				direction = 'e'
 				count_pas = 10
 				pos_init = 1
-				print 'choix'
 				initialize_to_zero(rob, group_impair, group_pair, 0)
-				print 'choix'
 				time.sleep(0.1)
 	
 			if pos_init == 1:
+				x_f_b = 0
+				y_f_b = 180
+				x_s = 160
+				y_s = 95
 				after_init(group_impair,pas)
-				print 'etat'
 				liste = change_front_back(x_f_b, y_f_b, angle_rotation)
-				print 'etat'
 				x_f_b = liste[0]
 				y_f_b = liste[1]
 				liste = change_side(x_s, y_s, angle_rotation)
-				print 'etat'
 				x_s = liste[0]
 				y_s = liste[1]
 				pos_init = 0
-				print 'etat'
 
-
-			if count_pas < 10 :
-				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), 0, 0, 0)		
-				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s, x_s-120, y_f_b, (y_s-70), (y_s-70), 6, 6, 6)
+			if count_pas < 10:
+				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, 0, 0, 0)
+				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, 6, 6, 6)
 			elif count_pas < 20:
-				group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), 0, 0, 0)				
-				group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s, x_s-120, y_f_b, (y_s-70), (y_s-70), -6, -6, -6)
+				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, 0, 0, 0)
+				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, -6, -6, -6)
 			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), 6, 6, 6)
-				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120, 120-x_s, -y_f_b, (70-y_s), -(y_s-70), 0, 0, 0)
+				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, 6, 6, 6)		
+				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, 0, 0, 0)
 			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), -6, -6, -6)
-				group_impair = modification_impair(group_impair, x_f_b-120, x_s-120, 120-x_s, -y_f_b, (70-y_s), -(y_s-70), 0, 0, 0)
+				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, -6, -6, -6)				
+				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, 0, 0, 0)
 
 			count_pas += 1	
 
-			print choix
 			if count_pas == 40:
 				count_pas = 0
 
-			move(group_pair, group_impair)
+			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
+
 			nb_pas_rotation = nb_pas_rotation + 1
 			odometry_rotation = nb_pas_rotation * angle_rotation
 
 			if odometry_rotation_par > 1:
 				odometry_rotation_par = odometry_rotation_par - angle_rotation
-			else:
+			elif start_odo == 1:
 				choix = 0
-				man = 1
+				manual = 1
+				start_odo = 0
 
-			print choix
 		elif choix == 'i':
 			count_pas = 10
 			pos_init = 1
 			initialize_to_zero(rob, group_impair, group_pair, 0)
 			hauteur = 0
-			x_f_b = 120
-			y_f_b = 0
-			x_s = 120
-			y_s = 70
+			liste = 0
 			angle = 0
 		elif choix == 'w':
 			angle = angle + 0.5
-			print angle
 			liste = change_front_back(x_f_b, y_f_b, angle)
 			x_f_b = liste[0]
 			y_f_b = liste[1]
-			print liste
 			liste = change_side(x_s, y_s, angle)
 			x_s = liste[0]
 			y_s = liste[1]
-			print liste
 		elif choix == 'x':
 			angle = angle - 0.5
-			print angle
 			liste = change_front_back(x_f_b, y_f_b, angle)
 			x_f_b = liste[0]
 			y_f_b = liste[1]
-			print liste
 			liste = change_side(x_s, y_s, angle)
 			x_s = liste[0]
 			y_s = liste[1]
-			print liste
 		elif choix == 'g':
 			initialize_to_zero(rob, group_impair, group_pair, 0)
 			while True:
-				print pas
 				if choix == 'z':
-					group_pair = modification_pair(group_pair, 0, pas*4, 0, -pas*4, 0, pas*4, 0, 0, 0)
-					group_impair = modification_impair(group_impair, -pas*4, 0, 0, 0, -pas*4, pas*4, 0, 0, 0)
+					group_pair = modification_pair(group_pair, 0, 0, 0, -pas*3, pas*3, -pas*3, 0, 0, 0)
+					group_impair = modification_impair(group_impair, 0, 0, 0, -pas*3, pas*3, pas*3, 0, 0, 0)
 
-					move(group_pair, group_impair)
+					move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 					choix = 0
 				elif choix == 's':
-					group_pair = modification_pair(group_pair, 0, -pas*4, 0, pas*4, 0, -pas*4, 0, 0, 0)
-					group_impair = modification_impair(group_impair, pas*4, 0, 0, 0, pas*4, -pas*4, 0, 0, 0)
+					group_pair = modification_pair(group_pair, 0, 0, 0, pas*3, -pas*3, pas*3, 0, 0, 0)
+					group_impair = modification_impair(group_impair, 0, 0, 0, pas*3, -pas*3, -pas*3, 0, 0, 0)
 
-					move(group_pair, group_impair)
+					move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 					choix = 0
 				elif choix == 'q':
-					group_pair = modification_pair(group_pair, pas, 0, -pas, 0, -pas, 0, 0, 0, 0)
-					group_impair = modification_impair(group_impair, 0, pas, -pas, pas, 0, 0, 0, 0, 0)
+					group_pair = modification_pair(group_pair, pas*3, pas*3, -pas*3, 0, 0, 0, 0, 0, 0)
+					group_impair = modification_impair(group_impair, pas*3, pas*3, -pas*3, 0, 0, 0, 0, 0, 0)
 
-					move(group_pair, group_impair)
+					move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 					choix = 0
 				elif choix == 'd':
-					group_pair = modification_pair(group_pair, -pas, 0, pas, 0, pas, 0, 0, 0, 0)
-					group_impair = modification_impair(group_impair, 0, -pas, pas, -pas, 0, 0, 0, 0, 0)
+					group_pair = modification_pair(group_pair, -pas*3, -pas*3, pas*3, 0, 0, 0, 0, 0, 0)
+					group_impair = modification_impair(group_impair, -pas*3, -pas*3, pas*3, 0, 0, 0, 0, 0, 0)
 
-					move(group_pair, group_impair)
+					move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 					choix = 0
 				elif choix == 'a':
-					group_pair = modification_pair(group_pair, x_s-120, 120-x_f_b, 120-x_s, (y_s-70), y_f_b, -(70-y_s), 0, 0, 0)
-					group_impair = modification_impair(group_impair, 120-x_f_b, 120-x_s, x_s-120, y_f_b, (y_s-70), (y_s-70), 0, 0, 0)
+					x_f_b = 0
+					y_f_b = 180
+					x_s = 160
+					y_s = 95
+					liste = change_front_back(x_f_b, y_f_b, angle_rotation)
+					x_f_b = liste[0]
+					y_f_b = liste[1]
+					liste = change_side(x_s, y_s, angle_rotation)
+					x_s = liste[0]
+					y_s = liste[1]
+					group_pair = modification_pair(group_pair, -x_s*2, x_f_b*2, x_s*2, -y_s*2, y_f_b*2, y_s*2, 0, 0, 0)
+					group_impair = modification_impair(group_impair, -x_f_b*2, x_s*2, -x_s*2, -y_f_b*2, y_s*2, -y_s*2, 0, 0, 0)
 
-					move(group_pair, group_impair)
+					move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 					choix = 0
 				elif choix == 'e':
-					group_pair = modification_pair(group_pair, 120-x_s, x_f_b-120, x_s-120, -(y_s-70), -y_f_b, (70-y_s), 0, 0, 0)
-					group_impair = modification_impair(group_impair, x_f_b-120, x_s-120, 120-x_s, -y_f_b, (70-y_s), -(y_s-70), 0, 0, 0)
+					x_f_b = 0
+					y_f_b = 180
+					x_s = 160
+					y_s = 95
+					liste = change_front_back(x_f_b, y_f_b, angle_rotation)
+					x_f_b = liste[0]
+					y_f_b = liste[1]
+					liste = change_side(x_s, y_s, angle_rotation)
+					x_s = liste[0]
+					y_s = liste[1]
+					group_pair = modification_pair(group_pair, x_s*2, -x_f_b*2, -x_s*2, y_s*2, -y_f_b*2, -y_s*2, 0, 0, 0)
+					group_impair = modification_impair(group_impair, x_f_b*2, -x_s*2, x_s*2, y_f_b*2, -y_s*2, y_s*2, 0, 0, 0)
 
-					move(group_pair, group_impair)
+					move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 					choix = 0
 				elif choix == 'r':
 					group_pair = modification_pair(group_pair, 0, 0, 0, 0, 0, 0, -6, -6, -6)
 					group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, -6, -6, -6)
 					hauteur = hauteur - 6
 
-				 	move(group_pair, group_impair)
+				 	move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 				 	choix = 0
 				elif choix == 'f':
 					group_pair = modification_pair(group_pair, 0, 0, 0, 0, 0, 0, 6, 6, 6)
 					group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, 6, 6, 6)
 					hauteur = hauteur + 6
 
-				 	move(group_pair, group_impair)
+				 	move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 				 	choix = 0
-				elif choix == 'w':
-					angle = angle + 0.5
-					print angle
-					liste = change_front_back(x_f_b, y_f_b, angle)
-					x_f_b = liste[0]
-					y_f_b = liste[1]
-					print liste
-					liste = change_side(x_s, y_s, angle)
-					x_s = liste[0]
-					y_s = liste[1]                     
-					print liste
-					choix = 0
-				elif choix == 'x':
-					angle = angle - 0.5
-					print angle
-					liste = change_front_back(x_f_b, y_f_b, angle)
-					x_f_b = liste[0]
-					y_f_b = liste[1]
-					print liste
-					liste = change_side(x_s, y_s, angle)
-					x_s = liste[0]
-					y_s = liste[1]
-					print liste
-					choix = 0
 				elif choix == 'n':
-					break;
+					break
 
+				time.sleep(0.02)
 		elif choix == '+':
 			print odometry_rotation_par, ', ', odometry_straight_line_par, '\n'
 			odometry_straight_line_par += 1
 			odometry_rotation_par += 1
+			start_odo = 1
 		elif choix == 'm':
 			if manual == 1:
 				manual = 0
