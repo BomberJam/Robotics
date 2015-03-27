@@ -130,12 +130,15 @@ def holonomie():
 	group_impair = [0, 160, 160, 180, 95, 95, -70, -70, -70]
 	group_pair = [160, 0, 160, 95, 180, 95, -70, -70, -70]
 
+	speed = 10
+
 	hauteur = 0
 	angle = 0
 	angle_rotation = 0.5
 	manual = 1
 	pas = 2
-	count_pas = 10
+	step = 10
+	count_pas = step*1
 	pos_init = 1
 	direction = 0  
 
@@ -146,7 +149,7 @@ def holonomie():
 		elif choix == 'z':
 			if direction != 'z':
 				direction = 'z'
-				count_pas = 10
+				count_pas = step*1
 				pos_init = 1
 				initialize_to_zero(rob, group_impair, group_pair, hauteur)
 				time.sleep(0.1)
@@ -155,22 +158,24 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-			if count_pas < 10 :
+			rapport_step = 60/step
+
+			if count_pas < 1*step:
 				group_pair = modification_pair(group_pair, 0, 0, 0, -pas, pas, -pas, 0, 0, 0)
-				group_impair = modification_impair(group_impair, 0, 0, 0, pas, -pas, -pas, 6, 6, 6)
-			elif count_pas < 20:
-				group_pair = modification_pair(group_pair, 0, 0, 0, -pas, pas, -pas, 0, 0, 0)	
-				group_impair = modification_impair(group_impair, 0, 0, 0, pas, -pas, -pas, -6, -6, -6)
-			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, 0, 0, 0, pas, -pas, pas, 6, 6, 6)					
-				group_impair = modification_impair(group_impair, 0, 0, 0, -pas, pas, pas, 0, 0, 0)
-			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, 0, 0, 0, pas, -pas, pas, -6, -6, -6)					
-				group_impair = modification_impair(group_impair, 0, 0, 0, -pas, pas, pas, 0, 0, 0)
+				group_impair = modification_impair(group_impair, 0, 0, 0, pas, -pas, -pas, rapport_step, rapport_step, rapport_step)
+			elif count_pas < 2*step:
+				group_pair = modification_pair(group_pair, 0, 0, 0, -pas , pas , -pas , 0, 0, 0)	
+				group_impair = modification_impair(group_impair, 0, 0, 0, pas , -pas , -pas , -rapport_step, -rapport_step, -rapport_step)
+			elif count_pas < 3*step:
+				group_pair = modification_pair(group_pair, 0, 0, 0, pas , -pas , pas , rapport_step, rapport_step, rapport_step)
+				group_impair = modification_impair(group_impair, 0, 0, 0, -pas , pas , pas , 0, 0, 0)
+			elif count_pas < 4*step:
+				group_pair = modification_pair(group_pair, 0, 0, 0, pas , -pas , pas , -rapport_step, -rapport_step, -rapport_step)
+				group_impair = modification_impair(group_impair, 0, 0, 0, -pas , pas , pas , 0, 0, 0)
 
 			count_pas += 1	
 
-			if count_pas == 40:
+			if count_pas == 4*step:
 				count_pas = 0
 
 			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
@@ -186,7 +191,7 @@ def holonomie():
 		elif choix == 's':
 			if direction != 's':
 				direction = 's'
-				count_pas = 10
+				count_pas = step*1
 				pos_init = 1
 				initialize_to_zero(rob, group_impair, group_pair, hauteur)
 				time.sleep(0.1)
@@ -195,22 +200,24 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-			if count_pas < 10 :
+			rapport_step = 60/step
+
+			if count_pas < 1*step :
 				group_pair = modification_pair(group_pair, 0, 0, 0, pas, -pas, pas, 0, 0, 0)
-				group_impair = modification_impair(group_impair, 0, 0, 0, -pas, pas, pas, 6, 6, 6)
-			elif count_pas < 20:
+				group_impair = modification_impair(group_impair, 0, 0, 0, -pas, pas, pas, rapport_step, rapport_step, rapport_step)
+			elif count_pas < 2*step:
 				group_pair = modification_pair(group_pair, 0, 0, 0, pas, -pas, pas, 0, 0, 0)	
-				group_impair = modification_impair(group_impair, 0, 0, 0, -pas, pas, pas, -6, -6, -6)
-			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, 0, 0, 0, -pas, pas, -pas, 6, 6, 6)					
+				group_impair = modification_impair(group_impair, 0, 0, 0, -pas, pas, pas, -rapport_step, -rapport_step, -rapport_step)
+			elif count_pas < 3*step:
+				group_pair = modification_pair(group_pair, 0, 0, 0, -pas, pas, -pas , rapport_step, rapport_step, rapport_step)
 				group_impair = modification_impair(group_impair, 0, 0, 0, pas, -pas, -pas, 0, 0, 0)
-			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, 0, 0, 0, -pas, pas, -pas, -6, -6, -6)					
+			elif count_pas < 4*step:
+				group_pair = modification_pair(group_pair, 0, 0, 0, -pas, pas, -pas, -rapport_step, -rapport_step, -rapport_step)
 				group_impair = modification_impair(group_impair, 0, 0, 0, pas, -pas, -pas, 0, 0, 0)
 
 			count_pas += 1	
 
-			if count_pas == 40:
+			if count_pas == 4*step:
 				count_pas = 0
 
 
@@ -227,7 +234,7 @@ def holonomie():
 		elif choix == 'd':
 			if direction != 'd':
 				direction = 'd'
-				count_pas = 10
+				count_pas = step*1
 				pos_init = 1
 				initialize_to_zero(rob, group_impair, group_pair, hauteur)
 				time.sleep(0.1)
@@ -236,22 +243,24 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-			if count_pas < 10 :
+			rapport_step = 60/step
+
+			if count_pas < 1*step:
 				group_pair = modification_pair(group_pair, -pas, -pas, pas, 0, 0, 0, 0, 0, 0)
-				group_impair = modification_impair(group_impair, pas, pas, -pas, 0, 0, 0, 6, 6, 6)
-			elif count_pas < 20:
+				group_impair = modification_impair(group_impair, pas, pas, -pas, 0, 0, 0, rapport_step, rapport_step, rapport_step)
+			elif count_pas < 2*step:
 				group_pair = modification_pair(group_pair, -pas, -pas, pas, 0, 0, 0, 0, 0, 0)	
-				group_impair = modification_impair(group_impair, pas, pas, -pas, 0, 0, 0, -6, -6, -6)
-			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, pas, pas, -pas, 0, 0, 0, 6, 6, 6)					
+				group_impair = modification_impair(group_impair, pas, pas, -pas, 0, 0, 0, -rapport_step, -rapport_step, -rapport_step)
+			elif count_pas < 3*step:
+				group_pair = modification_pair(group_pair, pas, pas, -pas, 0, 0,  0, rapport_step, rapport_step, rapport_step)					
 				group_impair = modification_impair(group_impair, -pas, -pas, pas, 0, 0, 0, 0, 0, 0)
-			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, pas, pas, -pas, 0, 0, 0, -6, -6, -6)					
+			elif count_pas < 4*step:
+				group_pair = modification_pair(group_pair, pas, pas, -pas, 0, 0, 0, -rapport_step, -rapport_step, -rapport_step)					
 				group_impair = modification_impair(group_impair, -pas, -pas, pas, 0, 0, 0, 0, 0, 0)
 
 			count_pas += 1	
 
-			if count_pas == 40:
+			if count_pas == 4*step:
 				count_pas = 0
 
 
@@ -268,7 +277,7 @@ def holonomie():
 		elif choix == 'q':
 			if direction != 'q':
 				direction = 'q'
-				count_pas = 10
+				count_pas = step*1
 				pos_init = 1
 				initialize_to_zero(rob, group_impair, group_pair, hauteur)
 				time.sleep(0.1)
@@ -277,22 +286,24 @@ def holonomie():
 				after_init(group_impair,pas)
 				pos_init = 0
 
-			if count_pas < 10 :
+			rapport_step = 60/step
+
+			if count_pas < 1*step :
 				group_pair = modification_pair(group_pair, pas, pas, -pas, 0, 0, 0, 0, 0, 0)
-				group_impair = modification_impair(group_impair, -pas, -pas, pas, 0, 0, 0, 6, 6, 6)
-			elif count_pas < 20:
+				group_impair = modification_impair(group_impair, -pas, -pas, pas, 0, 0, 0, rapport_step, rapport_step, rapport_step)
+			elif count_pas < 2*step:
 				group_pair = modification_pair(group_pair, pas, pas, -pas, 0, 0, 0, 0, 0, 0)	
-				group_impair = modification_impair(group_impair, -pas, -pas, pas, 0, 0, 0, -6, -6, -6)
-			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, -pas, -pas, pas, 0, 0, 0, 6, 6, 6)					
+				group_impair = modification_impair(group_impair, -pas, -pas, pas, 0, 0, 0, -rapport_step, -rapport_step, -rapport_step)
+			elif count_pas < 3*step:
+				group_pair = modification_pair(group_pair, -pas, -pas, pas, 0, 0,  0, rapport_step, rapport_step, rapport_step)					
 				group_impair = modification_impair(group_impair, pas, pas, -pas, 0, 0, 0, 0, 0, 0)
-			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, -pas, -pas, pas, 0, 0, 0, -6, -6, -6)					
+			elif count_pas < 4*step:
+				group_pair = modification_pair(group_pair, -pas, -pas, pas, 0, 0, 0, -rapport_step, -rapport_step, -rapport_step)					
 				group_impair = modification_impair(group_impair, pas, pas, -pas, 0, 0, 0, 0, 0, 0)
 
 			count_pas += 1	
 
-			if count_pas == 40:
+			if count_pas == 4*step:
 				count_pas = 0
 
 
@@ -310,7 +321,7 @@ def holonomie():
 		elif choix == 'a':
 			if direction != 'a':
 				direction = 'a'
-				count_pas = 10
+				count_pas = step*1
 				pos_init = 1
 				initialize_to_zero(rob, group_impair, group_pair, 0)
 				time.sleep(0.1)
@@ -329,22 +340,24 @@ def holonomie():
 				y_s = liste[1]
 				pos_init = 0
 
-			if count_pas < 10:
+			rapport_step = 60/step
+
+			if count_pas < 1*step:
 				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, 6, 6, 6)
-			elif count_pas < 20:
+				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, rapport_step, rapport_step, rapport_step)
+			elif count_pas < 2*step:
 				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, 0, 0, 0)
-				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, -6, -6, -6)
-			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, 6, 6, 6)		
+				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, -rapport_step, -rapport_step, -rapport_step)
+			elif count_pas < 3*step:
+				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, rapport_step, rapport_step, rapport_step)		
 				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, 0, 0, 0)
-			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, -6, -6, -6)				
+			elif count_pas < 4*step:
+				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, -rapport_step, -rapport_step, -rapport_step)				
 				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, 0, 0, 0)
 
 			count_pas += 1	
 
-			if count_pas == 40:
+			if count_pas == 4*step:
 				count_pas = 0
 
 			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
@@ -380,22 +393,24 @@ def holonomie():
 				y_s = liste[1]
 				pos_init = 0
 
-			if count_pas < 10:
+			rapport_step = 60/step
+
+			if count_pas < 1*step:
 				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, 0, 0, 0)
-				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, 6, 6, 6)
-			elif count_pas < 20:
+				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, rapport_step, rapport_step, rapport_step)
+			elif count_pas < 2*step:
 				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, 0, 0, 0)
-				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, -6, -6, -6)
-			elif count_pas < 30:
-				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, 6, 6, 6)		
+				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, -rapport_step, -rapport_step, -rapport_step)
+			elif count_pas < 3*step:
+				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, rapport_step, rapport_step, rapport_step)		
 				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, 0, 0, 0)
-			elif count_pas < 40:
-				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, -6, -6, -6)				
+			elif count_pas < 4*step:
+				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, -rapport_step, -rapport_step, -rapport_step)				
 				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, 0, 0, 0)
 
 			count_pas += 1	
 
-			if count_pas == 40:
+			if count_pas == 4*step:
 				count_pas = 0
 
 			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
@@ -411,7 +426,7 @@ def holonomie():
 				start_odo = 0
 
 		elif choix == 'i':
-			count_pas = 10
+			count_pas = step*1
 			pos_init = 1
 			initialize_to_zero(rob, group_impair, group_pair, 0)
 			hauteur = 0
@@ -510,12 +525,40 @@ def holonomie():
 					break
 
 				time.sleep(0.02)
-		elif choix == '+':
+		elif choix == 'o':
 			print odometry_rotation_par, ', ', odometry_straight_line_par, '\n'
 			odometry_straight_line_par += 1
 			odometry_rotation_par += 1
-			start_odo = 1
+			start_odo = 1	
+
+		elif choix == '+':
+			speed = speed + 1
+			print speed
+			set_motor_speed(rob, speed)
+
+		elif choix == '-':
+			speed = speed - 1
+			if(speed < 1):
+				speed = 1
+			print speed
+			set_motor_speed(rob, speed)
+
+		elif choix == 'p':
+			if (step > 19):
+				step = 19
+			else:
+				step = step + 1
+			count_pas = step*1
+			print step
 		elif choix == 'm':
+
+			if (step < 11):
+				step = 10
+			else:
+				step = step - 1
+			count_pas = step*1
+			print step
+		elif choix == 't':
 			if manual == 1:
 				manual = 0
 			else:
@@ -527,7 +570,7 @@ def holonomie():
 
 		verrou.release()
 		#print 'odometry_straight_line = ', odometry_straight_line, '; odometry_rotation = ', odometry_rotation, '\n' 
-		time.sleep(0.02)
+		time.sleep(0.05)
 
 
 def ROB_control(bot):

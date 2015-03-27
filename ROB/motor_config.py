@@ -1,4 +1,5 @@
 import pypot.dynamixel
+import numpy
 from kinematic import *
 
 def set_pos_to_leg (x, y, z, leg):
@@ -13,6 +14,9 @@ def all_motors_not_compliant (rob):
     for m in rob.motors:
         m.compliant = False
 
-def set_motor_speed(rob, speed):
-	for m in rob.motors:
-		m.goal_speed = speed
+def set_motor_speed(rob, v):
+    speed = 20 * numpy.cos(2 * numpy.pi * 1 )
+
+    for s in rob.motors:
+        s.moving_speed = speed * (v+1)#goal pour une danse
+
