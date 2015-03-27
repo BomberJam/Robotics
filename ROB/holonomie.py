@@ -544,8 +544,8 @@ def holonomie():
 			set_motor_speed(rob, speed)
 
 		elif choix == 'p':
-			if (step > 19):
-				step = 19
+			if (step > 21):
+				step = 22
 			else:
 				step = step + 1
 			count_pas = step*1
@@ -570,7 +570,7 @@ def holonomie():
 
 		verrou.release()
 		#print 'odometry_straight_line = ', odometry_straight_line, '; odometry_rotation = ', odometry_rotation, '\n' 
-		time.sleep(0.05)
+		time.sleep(0.005)
 
 
 def ROB_control(bot):
