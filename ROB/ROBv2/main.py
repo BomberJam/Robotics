@@ -14,4 +14,6 @@ if __name__ == '__main__':
 
 	ROB_control("/dev/input/js0", rob)
 
+	all_motors_compliant (rob)
+
 	rob.close()
