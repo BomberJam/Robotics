@@ -412,7 +412,7 @@ def holonomie():
 
 			if odometry_rotation_par > 1 and option == 3:
 				odometry_rotation_par = odometry_rotation_par - abs(angle_rotation)
-				choix = '05'
+				choix = '07'
 			elif option == 3:
 				auto = 0
 
