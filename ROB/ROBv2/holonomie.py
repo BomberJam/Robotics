@@ -365,7 +365,7 @@ def holonomie():
 
 			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
-		elif choix == '07' and up_down == 0:
+		elif choix == '07' and up_down == 0 and auto == 0:
 			if etat_walk_rotation != 2:
 				count_pas = step*1
 				etat_walk_rotation = 2
@@ -410,13 +410,7 @@ def holonomie():
 
 			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
-			if odometry_rotation_par > 1 and option == 3:
-				odometry_rotation_par = odometry_rotation_par - abs(angle_rotation)
-				choix = '07'
-			elif option == 3:
-				auto = 0
-
-		elif choix == '05' and up_down == 0:
+		elif choix == '05' and up_down == 0 and auto == 0:
 			if etat_walk_rotation != 3:
 				count_pas = step*1
 				etat_walk_rotation = 3
@@ -462,11 +456,114 @@ def holonomie():
 
 			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
-			if odometry_rotation_par > 1 and option == 3:
+		elif choix == '05' and up_down == 0 and auto == 1 and start_odo == 1:
+			if etat_walk_rotation != 3:
+				count_pas = step*1
+				etat_walk_rotation = 3
+				pos_init = 1
+				initialize_to_zero(rob, group_impair, group_pair, hauteur)
+				time.sleep(0.1)
+
+			if pos_init == 1:
+				x_f_b = 0
+				y_f_b = 180
+				x_s = 160
+				y_s = 95
+				if hauteur > -1:
+					after_init(group_impair,pas)
+				pos_init = 0
+				liste = change_front_back(x_f_b, y_f_b, angle_rotation)
+				x_f_b = liste[0]
+				y_f_b = liste[1]
+				liste = change_side(x_s, y_s, angle_rotation)
+				x_s = liste[0]
+				y_s = liste[1]
+				pos_init = 0
+
+			rapport_step = 60/step
+
+			if count_pas < 1*step:
+				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, 0, 0, 0)
+				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, rapport_step, rapport_step, rapport_step)
+			elif count_pas < 2*step:
+				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, 0, 0, 0)
+				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, -rapport_step, -rapport_step, -rapport_step)
+			elif count_pas < 3*step:
+				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, rapport_step, rapport_step, rapport_step)		
+				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, 0, 0, 0)
+			elif count_pas < 4*step:
+				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, -rapport_step, -rapport_step, -rapport_step)				
+				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, 0, 0, 0)
+
+			count_pas += 1	
+
+			if count_pas == 4*step:
+				count_pas = 0
+
+			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
+
+			if odometry_rotation_par > 1 and start_odo == 1:
 				odometry_rotation_par = odometry_rotation_par - abs(angle_rotation)
+				print odometry_rotation_par
 				choix = '05'
-			elif option == 3:
+			elif start_odo == 1:
 				auto = 0
+				start_odo = 0
+				choix = 0
+
+		elif choix == '07' and up_down == 0 and auto == 1 and start_odo == 1:
+			if etat_walk_rotation != 2:
+				count_pas = step*1
+				etat_walk_rotation = 2
+				pos_init = 1
+				initialize_to_zero(rob, group_impair, group_pair, hauteur)
+				time.sleep(0.1)
+
+			if pos_init == 1:
+				x_f_b = 0
+				y_f_b = 180
+				x_s = 160
+				y_s = 95
+				if hauteur > -1:
+					after_init(group_impair,pas)
+				liste = change_front_back(x_f_b, y_f_b, angle_rotation)
+				x_f_b = liste[0]
+				y_f_b = liste[1]
+				liste = change_side(x_s, y_s, angle_rotation)
+				x_s = liste[0]
+				y_s = liste[1]
+				pos_init = 0
+
+			rapport_step = 60/step
+
+			if count_pas < 1*step:
+				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, 0, 0, 0)
+				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, rapport_step, rapport_step, rapport_step)
+			elif count_pas < 2*step:
+				group_pair = modification_pair(group_pair, x_s, -x_f_b, -x_s, y_s, -y_f_b, -y_s, 0, 0, 0)
+				group_impair = modification_impair(group_impair, -x_f_b, x_s, -x_s, -y_f_b, y_s, -y_s, -rapport_step, -rapport_step, -rapport_step)
+			elif count_pas < 3*step:
+				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, rapport_step, rapport_step, rapport_step)		
+				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, 0, 0, 0)
+			elif count_pas < 4*step:
+				group_pair = modification_pair(group_pair, -x_s, x_f_b, x_s, -y_s, y_f_b, y_s, -rapport_step, -rapport_step, -rapport_step)				
+				group_impair = modification_impair(group_impair, x_f_b, -x_s, x_s, y_f_b, -y_s, y_s, 0, 0, 0)
+
+			count_pas += 1	
+
+			if count_pas == 4*step:
+				count_pas = 0
+
+			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
+
+			if odometry_rotation_par > 1 and start_odo == 1:
+				odometry_rotation_par = odometry_rotation_par - abs(angle_rotation)
+				print odometry_rotation_par
+				choix = '07'
+			elif start_odo == 1:
+				auto = 0
+				start_odo = 0
+				choix = 0
 
 		elif choix == '04':
 			if hauteur < -42:
@@ -530,22 +627,28 @@ def holonomie():
 		elif choix == '0C':
 			if up_down == 1:
 				up_down = 0
-				print '-----------------DOWN----------------'
+				choix = 0
+				print '-------------STOP UP DOWN------------'
 			else:
 				up_down = 1
-				print '------------------UP-----------------'
-				print '------------STOP ROTATION------------'
-				rotation = 0
+				choix = 0
+				print '---------------UP DOWN---------------'
+				if rotation == 1:
+					print '------------STOP ROTATION------------'
+					rotation = 0
 		elif choix == '0D':
 			if rotation == 1:
 				rotation = 0
+				choix = 0
 				print '------------STOP ROTATION------------'
 			else:
 				rotation = 1
+				choix = 0
 				print '---------------ROTATION--------------'
 		elif choix == '0E':
 			if auto == 1:
 				auto = 0
+				choix = 0
 				print '----------MANUAL MONITORING----------'
 			else:
 				auto = 1
@@ -557,13 +660,14 @@ def holonomie():
 		elif choix == '00':
 			initialize_to_zero(rob, group_impair, group_pair, hauteur)
 			option = option + 1
+			choix = 0
 
 			if option == 1:
 				print '-----------MOVING LEG MODE-----------'
 			elif option == 2:
 				print '--------------JERK MODE--------------'
 			elif option == 3:
-				print '------------AODOMETRY MODE-----------'
+				print '-------------ODOMETRY MODE-----------'
 			elif option > 3:
 				print '----------------NO MODE--------------'
 				option = 0
@@ -578,6 +682,7 @@ def holonomie():
 			auto = 0
 			x_temp = 0
 			y_temp = 0
+			choix = 0
 			initialize_to_zero(rob, group_impair, group_pair, 0)
 			print '----------------RESET----------------'
 			print '----------MANUAL MONITORING----------'

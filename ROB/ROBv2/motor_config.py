@@ -19,6 +19,10 @@ def all_motors_not_compliant (rob):
     for m in rob.motors:
         m.compliant = False
 
+def all_motors_compliant (rob):
+    for m in rob.motors:
+        m.compliant = True
+
 def set_motor_speed(rob, v):
     print v
     speed = 20 * numpy.cos(2 * numpy.pi * 1 )
