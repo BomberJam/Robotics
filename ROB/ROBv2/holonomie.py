@@ -502,7 +502,7 @@ def holonomie():
 
 			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
-			if odometry_rotation_par > 1 and start_odo == 1:
+			if odometry_rotation_par > 0 and start_odo == 1:
 				odometry_rotation_par = odometry_rotation_par - abs(angle_rotation)
 				print odometry_rotation_par
 				choix = '05'
@@ -556,7 +556,7 @@ def holonomie():
 
 			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
-			if odometry_rotation_par > 1 and start_odo == 1:
+			if odometry_rotation_par > 0 and start_odo == 1:
 				odometry_rotation_par = odometry_rotation_par - abs(angle_rotation)
 				print odometry_rotation_par
 				choix = '07'
@@ -836,8 +836,8 @@ def holonomie():
 				count_pas = step*1
 
 
-			x_pas = x
-			y_pas = y
+			x_pas = 0
+			y_pas = 2
 			x_temp = x_pas
 			y_temp = y_pas
 
@@ -845,6 +845,7 @@ def holonomie():
 
 
 			xt = 1
+			sleep = 0.2
 			while xt < 200:
 				n = xt/(200.0-1.0)
 				m = (200.0-1.0-xt)/(200.0-1.0)
@@ -874,9 +875,10 @@ def holonomie():
 				move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
 
-				xt = xt + 1
 
-				time.sleep(0.05)
+				time.sleep(sleep)
+				xt = xt + 1
+				sleep = sleep - 0.00075
 
 			while choix != '00':	
 
@@ -915,6 +917,7 @@ def holonomie():
 				time.sleep(0.05)
 
 			xt = 200
+			sleep = 0.05
 			while xt > 1:
 				n = xt/(200.0-1.0)
 				m = (200.0-1.0-xt)/(200.0-1.0)
@@ -942,10 +945,9 @@ def holonomie():
 
 				move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
-
+				time.sleep(sleep)
 				xt = xt - 1
-
-				time.sleep(0.05)				
+				sleep = sleep + 0.00075				
 
 		time.sleep(0.02)
 
