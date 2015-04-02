@@ -24,9 +24,8 @@ def all_motors_compliant (rob):
         m.compliant = True
 
 def set_motor_speed(rob, v):
-    print v
     speed = 20 * numpy.cos(2 * numpy.pi * 1 )
-
+    print v
     for s in rob.motors:
         s.moving_speed = speed * (v+1)#goal pour une danse
 

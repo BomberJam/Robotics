@@ -3,6 +3,7 @@ import os
 import threading
 import termios, fcntl, sys, os
 import time
+from dance import *
 
 from movement import *
 
@@ -204,6 +205,7 @@ def holonomie():
 			else:
 				step = step - 1
 			count_pas = step*1
+			choix = 0
 			print 'Run: ', step
 
 		elif choix == '0B':
@@ -213,6 +215,7 @@ def holonomie():
 			else:
 				step = step + 1
 			count_pas = step*1
+			choix = 0
 			print 'Run: ', step
 
 		elif choix == '08':
@@ -221,12 +224,17 @@ def holonomie():
 			else:
 				speed = speed - 1
 			print 'Speed: ', speed
+			choix = 0
 			set_motor_speed(rob, speed)
 
 		elif choix == '09':
 
-			speed = speed + 1
+			if speed > 9:
+				speed = 10
+			else:
+				speed = speed + 1
 			print 'Speed: ', speed
+			choix = 0
 			set_motor_speed(rob, speed)
 
 		elif choix == '07' and option == 1:
@@ -365,7 +373,7 @@ def holonomie():
 
 			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
-		elif choix == '07' and up_down == 0 and auto == 0:
+		elif choix == '05' and up_down == 0 and auto == 0:
 			if etat_walk_rotation != 2:
 				count_pas = step*1
 				etat_walk_rotation = 2
@@ -410,7 +418,7 @@ def holonomie():
 
 			move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
-		elif choix == '05' and up_down == 0 and auto == 0:
+		elif choix == '07' and up_down == 0 and auto == 0:
 			if etat_walk_rotation != 3:
 				count_pas = step*1
 				etat_walk_rotation = 3
@@ -572,7 +580,7 @@ def holonomie():
 				group_pair = modification_pair(group_pair, 0, 0, 0, 0, 0, 0, -6, -6, -6)
 				group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, -6, -6, -6)
 				hauteur = hauteur - 6
-			print hauteur
+			print 'Hauteur: ', -hauteur
 
 			etat_walk_rotation = 0
 
@@ -585,7 +593,7 @@ def holonomie():
 				group_pair = modification_pair(group_pair, 0, 0, 0, 0, 0, 0, 6, 6, 6)
 				group_impair = modification_impair(group_impair, 0, 0, 0, 0, 0, 0, 6, 6, 6)
 				hauteur = hauteur + 6
-			print hauteur
+			print 'Hauteur: ', -hauteur
 
 			etat_walk_rotation = 0
 
@@ -656,11 +664,13 @@ def holonomie():
 				first = 1
 				print '--------AUTOMATIQUE MONITORING-------'
 		elif choix == '0F':
-			joy['square'] = True
+			print '-----------------DANCE---------------'
+			dance(rob)
+			choix = 0
+
 		elif choix == '00':
 			initialize_to_zero(rob, group_impair, group_pair, hauteur)
 			option = option + 1
-			choix = 0
 
 			if option == 1:
 				print '-----------MOVING LEG MODE-----------'
@@ -683,6 +693,8 @@ def holonomie():
 			x_temp = 0
 			y_temp = 0
 			choix = 0
+			group_impair = [0, 160, 160, 180, 95, 95, -70, -70, -70]
+			group_pair = [160, 0, 160, 95, 180, 95, -70, -70, -70]
 			initialize_to_zero(rob, group_impair, group_pair, 0)
 			print '----------------RESET----------------'
 			print '----------MANUAL MONITORING----------'
@@ -844,12 +856,11 @@ def holonomie():
 			rapport_step = 60/step
 
 
-			xt = 1
-			sleep = 0.2
-			while xt < 200:
-				n = xt/(200.0-1.0)
-				m = (200.0-1.0-xt)/(200.0-1.0)
-				speed = m*xt + n*200.0
+			xt = 0.05
+			while xt < 10:
+				n = xt/(10.0-0.05)
+				m = (10.0-0.05-xt)/(10.0-0.05)
+				speed = m*xt + n*10.0
 
 				set_motor_speed(rob, speed)
 				print x_temp, ', ', y_temp
@@ -876,9 +887,8 @@ def holonomie():
 
 
 
-				time.sleep(sleep)
-				xt = xt + 1
-				sleep = sleep - 0.00075
+				time.sleep(0.04)
+				xt = xt + 0.05
 
 			while choix != '00':	
 
@@ -914,14 +924,13 @@ def holonomie():
 
 				move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
-				time.sleep(0.05)
+				time.sleep(0.03)
 
-			xt = 200
-			sleep = 0.05
-			while xt > 1:
-				n = xt/(200.0-1.0)
-				m = (200.0-1.0-xt)/(200.0-1.0)
-				speed = m*xt + n*200.0
+			xt = 10.0
+			while xt > 0:
+				n = xt/(10.0-0.05)
+				m = (10.0-0.05-xt)/(10.0-0.05)
+				speed = m*xt + n*10.0
 
 				set_motor_speed(rob, speed)
 
@@ -945,9 +954,8 @@ def holonomie():
 
 				move(rob, modification_repere_bot_pair(group_pair), modification_repere_bot_impair(group_impair))
 
-				time.sleep(sleep)
-				xt = xt - 1
-				sleep = sleep + 0.00075				
+				time.sleep(0.04)
+				xt = xt - 0.05	
 
 		time.sleep(0.02)
 

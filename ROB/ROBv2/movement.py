@@ -299,6 +299,7 @@ def init_leg(x, y, leg):
 
 def move_leg(x, y, z, leg):
     set_pos_to_leg(x, y, z, leg)
+    print 'X: ', x, '\n Y: ', y, '\n Z: ', z, '\n'
     time.sleep(0.05)
 
 
